@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
             Player.rb.isKinematic = false;
             Start.enabled = false;
             gameStart = true;
+            Player.Jump();
             audioMixer.SetFloat("LowPass", 22000);
         }
         if (SpikeCollision.Dead)

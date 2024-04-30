@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
         Force();
     }
 
-    void Jump()
+    public void Jump()
     {
         float jumpVelocity = Mathf.Sqrt(2 * jumpHeight * Mathf.Abs(Physics2D.gravity.y * rb.gravityScale));
         rb.velocity = new Vector2(rb.velocity.x, jumpVelocity);
@@ -72,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (Speed < maxValue - 5)
             {
-                Speed += 5f;
+                Speed += 6.5f;
             }
             else if (maxSpeed == false)
             {
