@@ -53,7 +53,15 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             spawnerRight.DestroySpike();
-
+            score++;
+            if (Speed < maxValue - 5)
+            {
+                Speed += 6.5f;
+            }
+            else if (maxSpeed == false)
+            {
+                maxSpeed = true;
+            }
             if (isFacingRight)
             {
                 isFacingRight = false;
@@ -64,20 +72,7 @@ public class PlayerMovement : MonoBehaviour
                 isFacingRight = true;
                 spawnerRight.SpawnSpikes();
             }
-            score++;
-            if (score == 20 || score == 40)
-            {
-                SpikeSpawner.numberOfSpikes++;
-            }
-
-            if (Speed < maxValue - 5)
-            {
-                Speed += 6.5f;
-            }
-            else if (maxSpeed == false)
-            {
-                maxSpeed = true;
-            }
+            
         }
     }
 }

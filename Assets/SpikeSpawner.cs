@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,13 @@ using UnityEngine.UIElements;
 public class SpikeSpawner : MonoBehaviour
 {
     public GameObject spikePrefab;
-    public Transform wallTransform;
-    float spawnX = 7.5f;
-    public static int numberOfSpikes = 2;
+    public BoxCollider2D wallScale;
+    float spawnX = 8.0859f;
+    public static int numberOfSpikes = 30;
     public PlayerMovement Player;
-    GameObject[] previousSpike;
+    float spikeIncrement = 0.12f;
+    int[] previousSpike;
+    int spawnTile;
 
     void Start()
     {
@@ -21,30 +24,31 @@ public class SpikeSpawner : MonoBehaviour
 
     public void SpawnSpikes()
     {
-        float wallTop = (wallTransform.position.y + wallTransform.localScale.y / 2) - 0.7f * 2f;
-        float wallBottom = (wallTransform.position.y - wallTransform.localScale.y / 2) + 0.7f * 2f;
-
-        previousSpike = new GameObject[numberOfSpikes];
-        for (int i = 0; i < numberOfSpikes; i++)
+        previousSpike = new int[numberOfSpikes];
+        for (int u = 0; u < numberOfSpikes; u++)
         {
-            GameObject newSpike = Instantiate(spikePrefab, SpikeOverlap(wallTop, wallBottom, i), Quaternion.Euler(0f, 0f, 90f));
-            previousSpike[i] = newSpike;
+            previousSpike[u] = 0;
+        }
+
+        for (int i = 0; i < SpikeSpawner.numberOfSpikes; i++)
+        {
+            Instantiate(spikePrefab, SpikeOverlap(i), Quaternion.Euler(0f, 0f, 90f));
+            previousSpike[i] = spawnTile;
         }
     }
 
-    public Vector2 SpikeOverlap(float WallTop, float WallBottom, int index)
+    public Vector2 SpikeOverlap(int index)
     {
-        Vector2 spawnPosition = new Vector2(spawnX, Random.Range(WallBottom, WallTop));
-            for (int i = 0; i < index; i++)
+        float wallTop = wallScale.bounds.max.y - 0.80f;
+        spawnTile = UnityEngine.Random.Range(1, 36);
+        Vector2 spawnPosition = new Vector2(spawnX, (wallTop - (spawnTile * 2 * spikeIncrement)));
+        for (int i = 0; i < index; i++)
+        {
+            if (spawnTile == previousSpike[i])
             {
-                {
-                    Vector2 prevPos = previousSpike[i].transform.position;
-                    if (Vector2.Distance(prevPos, spawnPosition) < 0.8)
-                    {
-                        return SpikeOverlap(WallBottom, WallTop, index);
-                    }
-                }
+                return SpikeOverlap(index);
             }
+        }
         return spawnPosition;
     }
     public void DestroySpike()

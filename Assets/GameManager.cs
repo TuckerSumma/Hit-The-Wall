@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
     private void ResetValues()
     {
         PlayerMovement.score = 0;
-        SpikeSpawner.numberOfSpikes = 2;
+        SpikeSpawner.numberOfSpikes = 5;
         PlayerMovement.isFacingRight = true;
         PlayerMovement.maxSpeed = false;
         SpikeCollision.Dead = false;
