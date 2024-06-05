@@ -27,7 +27,7 @@ public class SpikeSpawner : MonoBehaviour
     public void SpawnSpikes()
     {
         wallTop = wallScale.bounds.max.y - 0.80f;
-        if (PlayerMovement.score % 4 == 0 && PlayerMovement.score != 0 && PlayerMovement.score <= 60)
+        if (PlayerMovement.score % 4 == 0 && PlayerMovement.score != 0 && PlayerMovement.score <= 80)
         {
             SpikeSpawner.numberOfSpikes++;
         }
@@ -37,17 +37,13 @@ public class SpikeSpawner : MonoBehaviour
             previousSpike[u] = 0;
         }
 
-        if (PlayerMovement.score >= 0)
+        if (PlayerMovement.score < 60)
         {
             RandomGroups();
         }
         else
         {
-            for (int i = 0; i < SpikeSpawner.numberOfSpikes; i++)
-            {
-                Instantiate(spikePrefab, SpikeOverlap(i), Quaternion.Euler(0f, 0f, 90f));
-                previousSpike[i] = spawnTile;
-            }
+            HardMode();
         }
     }
 
@@ -67,13 +63,13 @@ public class SpikeSpawner : MonoBehaviour
     }
     public void RandomGroups()
     {
-        int maxRange = 35 - SpikeSpawner.numberOfSpikes;
+        int maxRange = 36 - SpikeSpawner.numberOfSpikes;
         int group1Range = UnityEngine.Random.Range(8, maxRange/2);
         int group2Range = maxRange - group1Range;
         int group1Start = UnityEngine.Random.Range(0, 35 - group1Range);
         int group2Start = UnityEngine.Random.Range(0, 35 - group2Range);
-        if (group1Start <= group2Start && group2Start <= group1Start + group1Range || group1Start <= group2Start + group2Range && group2Start + group2Range <= group1Start + group1Range ||
-            group2Start <= group1Start && group1Start <= group2Start + group2Range || group2Start <= group1Start + group1Range && group1Start + group1Range <= group2Start + group2Range)
+        if (group1Start <= group2Start && group2Start <= group1Start + group1Range -1 || group1Start <= group2Start + group2Range -1 && group2Start + group2Range -1 <= group1Start + group1Range -1 ||
+            group2Start <= group1Start && group1Start <= group2Start + group2Range -1 || group2Start <= group1Start + group1Range -1 && group1Start + group1Range -1 <= group2Start + group2Range -1 || group1Start + group1Range == group2Start || group2Start + group2Range == group1Start)
         {
             Debug.Log("Restarted");
             RandomGroups();
@@ -81,17 +77,17 @@ public class SpikeSpawner : MonoBehaviour
         else
         {
             Debug.Log(group1Start);
-            Debug.Log(group1Start + group1Range);
+            Debug.Log(group1Range);
             Debug.Log(group2Start);
-            Debug.Log(group2Start + group2Range);
+            Debug.Log(group2Range);
             emptySpike = new int[36];
             for (int i = 0; i <= 35; i++)
             {
-                if (group1Start + group1Range >= i + group1Start)
+                if (group1Range > i)
                 {
                     emptySpike[group1Start+i] = 1;
                 }
-                if (group2Start + group2Range >= i + group2Start)
+                if (group2Range > i)
                 {
                     emptySpike[group2Start+i] = 1;
                 }
@@ -103,6 +99,27 @@ public class SpikeSpawner : MonoBehaviour
                     Vector2 spawnPosition = new Vector2(spawnX, (wallTop - (i * 2 * spikeIncrement)));
                     Instantiate(spikePrefab, spawnPosition, Quaternion.Euler(0f, 0f, 90f));
                 }
+            }
+        }
+    }
+    public void HardMode()
+    {
+        int groupRange = 32 - SpikeSpawner.numberOfSpikes;
+        int groupStart = UnityEngine.Random.Range(0, 35 - groupRange);
+        emptySpike = new int[36];
+        for (int i = 0; i <= 35; i++)
+        {
+            if (groupRange > i)
+            {
+                emptySpike[groupStart+i] = 1;
+            }
+        }
+        for (int i = 0; i <= 35; i++)
+        {
+            if (emptySpike[i] != 1)
+            {
+                Vector2 spawnPosition = new Vector2(spawnX, (wallTop - (i * 2 * spikeIncrement)));
+                Instantiate(spikePrefab, spawnPosition, Quaternion.Euler(0f, 0f, 90f));
             }
         }
     }
