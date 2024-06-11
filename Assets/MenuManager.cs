@@ -71,6 +71,7 @@ public class MenuManager : MonoBehaviour
     {
         Resolution resolution = resolutions[savedResolutions[resolutionIndex]];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Application.targetFrameRate = Convert.ToInt32(resolution.refreshRateRatio.value);
         currentResolutionIndex = resolutionIndex;
     }
     public void Play()

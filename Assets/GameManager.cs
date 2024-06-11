@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
             Start.enabled = false;
             gameStart = true;
             Player.Jump();
+            Player.Force();
             audioMixer.SetFloat("LowPass", 22000);
         }
         if (SpikeCollision.Dead)

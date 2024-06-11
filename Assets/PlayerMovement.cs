@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SocialPlatforms.Impl;
 
 public class PlayerMovement : MonoBehaviour
@@ -18,17 +20,30 @@ public class PlayerMovement : MonoBehaviour
     public static int score = 0;
     public SpikeSpawner spawnerRight;
     public LSpikeSpawner spawnerLeft;
+    float angleInDegrees;
+    float angleInRadians;
+
+    private void Awake()
+    {
+        horizontalInput = 1f;
+        Application.targetFrameRate = 165;
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) ||Input.GetMouseButtonDown(0))
         {
             Jump();
         }
+       
     }
 
     void FixedUpdate()
     {
-        Force();
+        angleInRadians = Mathf.Atan2(rb.velocity.y, rb.velocity.x);
+        angleInDegrees = angleInRadians * Mathf.Rad2Deg;
+        rb.rotation = 90+angleInDegrees;
+        Debug.Log(rb.rotation);
+        //Force();
     }
 
     public void Jump()
@@ -37,21 +52,10 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jumpVelocity);
     }
 
-    void Force()
+    public void Force()
     {
-        if (isFacingRight == true) 
-        {
-            horizontalInput = 1f;
-        }
-        else
-        {
-            horizontalInput = -1f;
-        }
-        UnityEngine.Vector2 moveDirection = new UnityEngine.Vector2(horizontalInput * Speed * Time.deltaTime, rb.velocity.y);
+        UnityEngine.Vector2 moveDirection = new UnityEngine.Vector2(horizontalInput * Speed * 0.02f, rb.velocity.y);
         rb.velocity = moveDirection;
-        float angleInRadians = Mathf.Atan2(moveDirection.y, moveDirection.x);
-        float angleInDegrees = angleInRadians * Mathf.Rad2Deg;
-        transfromRB.rotation = UnityEngine.Quaternion.Euler(0f, 0f, 90+angleInDegrees);
         
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -68,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 maxSpeed = true;
             }
+
             if (isFacingRight)
             {
                 isFacingRight = false;
@@ -78,7 +83,15 @@ public class PlayerMovement : MonoBehaviour
                 isFacingRight = true;
                 spawnerRight.SpawnSpikes();
             }
-            
+            if (isFacingRight == true)
+            {
+                horizontalInput = 1f;
+            }
+            else
+            {
+                horizontalInput = -1f;
+            }
+            Force();
         }
     }
 }
