@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
@@ -7,6 +8,7 @@ using UnityEngine.SocialPlatforms.Impl;
 public class PlayerMovement : MonoBehaviour
 {
     public float jumpHeight = 10f;
+    public Transform transfromRB;
     public Rigidbody2D rb;
     public float Speed;
     public static bool isFacingRight = true;
@@ -32,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     public void Jump()
     {
         float jumpVelocity = Mathf.Sqrt(2 * jumpHeight * Mathf.Abs(Physics2D.gravity.y * rb.gravityScale));
-        rb.velocity = new Vector2(rb.velocity.x, jumpVelocity);
+        rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jumpVelocity);
     }
 
     void Force()
@@ -45,8 +47,12 @@ public class PlayerMovement : MonoBehaviour
         {
             horizontalInput = -1f;
         }
-        Vector2 moveDirection = new Vector2(horizontalInput * Speed * Time.deltaTime, rb.velocity.y);
+        UnityEngine.Vector2 moveDirection = new UnityEngine.Vector2(horizontalInput * Speed * Time.deltaTime, rb.velocity.y);
         rb.velocity = moveDirection;
+        float angleInRadians = Mathf.Atan2(moveDirection.y, moveDirection.x);
+        float angleInDegrees = angleInRadians * Mathf.Rad2Deg;
+        transfromRB.rotation = UnityEngine.Quaternion.Euler(0f, 0f, 90+angleInDegrees);
+        
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {

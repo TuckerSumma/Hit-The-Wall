@@ -71,15 +71,10 @@ public class SpikeSpawner : MonoBehaviour
         if (group1Start <= group2Start && group2Start <= group1Start + group1Range -1 || group1Start <= group2Start + group2Range -1 && group2Start + group2Range -1 <= group1Start + group1Range -1 ||
             group2Start <= group1Start && group1Start <= group2Start + group2Range -1 || group2Start <= group1Start + group1Range -1 && group1Start + group1Range -1 <= group2Start + group2Range -1 || group1Start + group1Range == group2Start || group2Start + group2Range == group1Start)
         {
-            Debug.Log("Restarted");
             RandomGroups();
         }
         else
         {
-            Debug.Log(group1Start);
-            Debug.Log(group1Range);
-            Debug.Log(group2Start);
-            Debug.Log(group2Range);
             emptySpike = new int[36];
             for (int i = 0; i <= 35; i++)
             {
